@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+
+# Data
+*.xlsx
+*.csv
+
+# Env
+.env
