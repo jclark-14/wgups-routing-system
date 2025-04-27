@@ -1,5 +1,7 @@
 # 📦 WGUPS Package Routing Program
 
+![Python](https://img.shields.io/badge/python-3.x-blue)
+
 **Western Governors University — C950 DSA2 Project**
 
 A command-line based package delivery system that optimizes delivery routes using custom data structures and routing algorithms. This program leverages a hash table for efficient package management and implements Nearest Neighbor with 2-Opt optimization for route planning.
@@ -108,7 +110,3 @@ A command-line based package delivery system that optimizes delivery routes usin
 - Data parsing handles irregular CSV formats gracefully.
 
 If you'd like, add a simple Python version badge at the top:
-
-# 📦 WGUPS Package Routing Program
-
-![Python](https://img.shields.io/badge/python-3.x-blue)
