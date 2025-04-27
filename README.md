@@ -52,27 +52,31 @@ A command-line based package delivery system that optimizes delivery routes usin
 
 > Unit tests for key components
 
-    ```
-    python3 -m wgups.test_package
-    python3 -m wgups.test_loaders
-    ```
+```
+  python3 -m wgups.test_package
+  python3 -m wgups.test_loaders
+  python3 -m wgups.test_utils
+  python3 -m wgups.test_truck
+```
 
 ---
 
 ## 📂 Project Structure
 
 ```bash
-    wgups/
-├── hash_table.py        # Custom HashTable implementation
-├── models.py            # Package class and related logic
-├── load_data.py         # CSV data loaders for packages/distances
-├── utils.py             # Helper functions (time parsing, etc.)
-├── test_package.py      # Unit tests for Package class
-├── test_loaders.py      # Unit tests for data loaders
-└── main.py              # CLI entry point
-data/
-├── packages.csv         # Package data
-└── distances.csv        # Distance matrix
+  wgups/
+  ├── hash_table.py        # Custom HashTable implementation
+  ├── models.py            # Package & Truck classes
+  ├── load_data.py         # CSV data loaders
+  ├── utils.py             # Helper functions (normalization, time parsing)
+  ├── test_package.py      # Unit tests: Package
+  ├── test_truck.py        # Unit tests: Truck
+  ├── test_loaders.py      # Unit tests: Data loaders
+  ├── test_utils.py        # Unit tests: Utilities
+  └── main.py              # CLI entry point
+  data/
+  ├── packages.csv         # Package dataset
+  └── distances.csv        # Distance matrix
 ```
 
 ---
@@ -102,3 +106,11 @@ data/
 - No external dependencies for maximum portability.
 
 - Data parsing handles irregular CSV formats gracefully.
+
+If you'd like, add a simple Python version badge at the top:
+
+```markdown
+# 📦 WGUPS Package Routing Program
+
+![Python](https://img.shields.io/badge/python-3.x-blue)
+```

@@ -1,7 +1,9 @@
 import csv
 from datetime import datetime
+from typing import List, Tuple, Dict
 from wgups.hash_table import HashTable
 from wgups.models import Package
+from wgups.utils import normalize
 
 def load_packages(filepath: str = "data/packages.csv") -> HashTable:
     """Load package data from file into hash table."""
@@ -30,7 +32,7 @@ def load_packages(filepath: str = "data/packages.csv") -> HashTable:
             # Build package object and Hash table
             package = Package(
                 package_id  = int(package_id),
-                address     = address,
+                address     = normalize(address),
                 city        = city,
                 state       = state,
                 zip_code    = zip_code,
@@ -41,6 +43,33 @@ def load_packages(filepath: str = "data/packages.csv") -> HashTable:
             packages.insert(int(package_id), package)
     return packages
 
-# def _normalize(addr: str) -> str:
-#         """Normalize address string."""
-#         return " ".join(addr.lower().split())
+def load_distances(filepath: str = "data/distances.csv") -> Tuple[List[List[float]], Dict[str, int]]:
+    address_map = {}
+    matrix = []
+    #Build address map and distance_matrix from distances.csv
+    with open(filepath, encoding="utf-8-sig") as f:
+        reader = csv.reader(f)
+        for idx, row in enumerate(reader):
+            #Skip empty rows
+            if not row or not row[0].strip():
+                continue
+            # Normalize address and build address map
+            address = normalize(row[0])
+            address_map[address] = idx
+            # Build matrix row from csv
+            distances= []
+            for val in row[1:]:
+                try:
+                    distances.append(float(val))
+                except ValueError:
+                    distances.append(0.0)
+            # Add distance row to matrix
+            matrix.append(distances)
+    # Build full symmetric matrix   
+    size = len(matrix)
+    distance_matrix = [[0.0 for _ in range(size)] for _ in range(size)]
+    for i in range(size):
+        for j in range(i + 1):
+            distance_matrix[i][j] = matrix[i][j]
+            distance_matrix[j][i] = matrix[i][j]
+    return distance_matrix, address_map
