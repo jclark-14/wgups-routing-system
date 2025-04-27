@@ -109,8 +109,6 @@ A command-line based package delivery system that optimizes delivery routes usin
 
 If you'd like, add a simple Python version badge at the top:
 
-```markdown
 # 📦 WGUPS Package Routing Program
 
 ![Python](https://img.shields.io/badge/python-3.x-blue)
-```
