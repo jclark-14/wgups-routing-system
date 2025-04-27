@@ -108,5 +108,3 @@ A command-line based package delivery system that optimizes delivery routes usin
 - No external dependencies for maximum portability.
 
 - Data parsing handles irregular CSV formats gracefully.
-
-If you'd like, add a simple Python version badge at the top:
