@@ -1,8 +1,8 @@
 import re
 from datetime import datetime, timedelta
 from typing import List, Optional
-from wgups.utils import START_TIME, time_from_str, truck_from_note
-from wgups.utils import STATUS_AT_HUB, STATUS_EN_ROUTE, STATUS_DELIVERED
+from wgups.utils import time_from_str, truck_from_note, normalize
+from wgups.constants import STATUS_AT_HUB, STATUS_EN_ROUTE, STATUS_DELIVERED, START_TIME
 
 
 
@@ -82,8 +82,8 @@ class Package:
     def get_address(self, time: Optional[datetime] = None) -> str:
         """Return corrected address if applicable, else original address"""
         if self.correction_time and time and time < self.correction_time:
-            return self.original_address
-        return self.corrected_address or self.address
+            return normalize(self.original_address)
+        return normalize(self.corrected_address) if self.corrected_address else normalize(self.address)
     
     def get_status(self, time: datetime) -> str: 
         """Get package status at given time"""

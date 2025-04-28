@@ -4,7 +4,7 @@
 
 **Western Governors University — C950 DSA2 Project**
 
-A command-line based package delivery system that optimizes delivery routes using custom data structures and routing algorithms. This program leverages a hash table for efficient package management and implements Nearest Neighbor with 2-Opt optimization for route planning.
+A command-line based package delivery system that optimizes delivery routes using custom data structures and routing algorithms. This program leverages a hash table for efficient package management and implements Nearest Neighbor with planned modular optimization support.
 
 ---
 
@@ -13,14 +13,18 @@ A command-line based package delivery system that optimizes delivery routes usin
 - **Custom Hash Table** for O(1) average-time package lookups.
 - **Dynamic Package State Tracking** (`At Hub`, `En Route`, `Delivered`).
 - **CSV Data Loaders** for packages and distances.
-- **Constraint Handling**:
-  - Delayed packages.
+- **Advanced Constraint Handling**:
+  - Delayed packages with dynamic truck departure.
   - Truck-specific assignments.
   - Group delivery requirements.
   - Address corrections after departure.
+  - Early deadline prioritization without redundant adjustments.
+- **Refactored Routing Utilities**:
+  - Centralized, reusable route reordering logic.
+  - Clean separation of concerns for better maintainability.
 - **Routing Optimization**:
-  - Nearest Neighbor (NN) algorithm.
-  - 2-Opt improvement pass.
+  - Base: Nearest Neighbor (NN) algorithm.
+  - ⚡ **Framework Ready** for plug-and-play optimization modules (e.g., 2-Opt, Simulated Annealing).
 - **CLI Interface** for querying package status, total mileage, and more.
 - **Unit Tests** for core components (Package model, Data Loaders, Hash Table).
 
@@ -67,18 +71,18 @@ A command-line based package delivery system that optimizes delivery routes usin
 
 ```bash
   wgups/
-  ├── hash_table.py        # Custom HashTable implementation
-  ├── models.py            # Package & Truck classes
-  ├── load_data.py         # CSV data loaders
-  ├── utils.py             # Helper functions (normalization, time parsing)
-  ├── test_package.py      # Unit tests: Package
-  ├── test_truck.py        # Unit tests: Truck
-  ├── test_loaders.py      # Unit tests: Data loaders
-  ├── test_utils.py        # Unit tests: Utilities
-  └── main.py              # CLI entry point
+  ├── constraint_loader.py   # Applies package-truck constraints (refactored)
+  ├── routing_utils.py       # Centralized route reordering logic
+  ├── routing_algorithms.py  # Route generation (NN, future modular optimizations)
+  ├── hash_table.py          # Custom HashTable implementation
+  ├── models.py              # Package & Truck classes
+  ├── load_data.py           # CSV data loaders
+  ├── utils.py               # Helper functions & constants
+  ├── test_*.py              # Unit tests
+  └── main.py                # CLI entry point
   data/
-  ├── packages.csv         # Package dataset
-  └── distances.csv        # Distance matrix
+  ├── packages.csv           # Package dataset
+  └── distances.csv          # Distance matrix
 ```
 
 ---
