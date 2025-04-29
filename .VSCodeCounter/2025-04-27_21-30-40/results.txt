@@ -1,0 +1,39 @@
+Date : 2025-04-27 21:30:40
+Directory : c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups
+Total : 15 files,  710 codes, 46 comments, 131 blanks, all 887 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Python   |         15 |        710 |         46 |        131 |        887 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                   | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                      |         15 |        710 |         46 |        131 |        887 |
++------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                               | language | code       | comment    | blank      | total      |
++------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\__init__.py           | Python   |          0 |          0 |          1 |          1 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\constants.py          | Python   |         16 |          2 |          5 |         23 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\constraint_loader.py  | Python   |        123 |          3 |         16 |        142 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\get_route.py          | Python   |         10 |          0 |          3 |         13 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\hash_table.py         | Python   |         61 |         10 |         13 |         84 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\load_data.py          | Python   |         63 |         10 |          2 |         75 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\models.py             | Python   |        118 |          8 |         19 |        145 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\routing_algorithms.py | Python   |         14 |          1 |          6 |         21 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\routing_utils.py      | Python   |         51 |          0 |          8 |         59 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\simulation.py         | Python   |         58 |          8 |          9 |         75 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\test_loaders.py       | Python   |         40 |          1 |         10 |         51 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\test_package.py       | Python   |         47 |          2 |         13 |         62 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\test_truck.py         | Python   |         49 |          0 |         10 |         59 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\test_utils.py         | Python   |         15 |          0 |          6 |         21 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\utils.py              | Python   |         45 |          1 |         10 |         56 |
+| Total                                                                  |          |        710 |         46 |        131 |        887 |
++------------------------------------------------------------------------+----------+------------+------------+------------+------------+

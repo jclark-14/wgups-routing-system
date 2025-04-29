@@ -1,6 +1,6 @@
 import unittest
-from wgups.load_data import load_packages, load_distances
-from wgups.hash_table import HashTable
+from wgups.data_loader import load_packages, load_distances
+from wgups.data_structures import HashTable
 from wgups.models import Package
 from wgups.utils import START_TIME
 
