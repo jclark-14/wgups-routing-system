@@ -1,7 +1,7 @@
 import unittest
 from datetime import timedelta
 from wgups.models import Truck, Package
-from wgups.utils import STATUS_AT_HUB, STATUS_EN_ROUTE, STATUS_DELIVERED
+from wgups.constants import STATUS_AT_HUB, STATUS_EN_ROUTE, STATUS_DELIVERED
 
 class TestTruck(unittest.TestCase):
 
@@ -37,9 +37,9 @@ class TestTruck(unittest.TestCase):
         self.assertAlmostEqual(self.truck.mileage, 18.0)
         self.assertEqual(self.truck.time, initial_time + timedelta(hours=1))
 
-    def test_deliver_package(self):
+    def test_deliver_package(self,):
         self.truck.load_package(self.package)
-        self.truck.deliver(self.package)
+        self.truck.deliver(self.package, 5.0)
         self.assertEqual(self.package.status, STATUS_DELIVERED)
         self.assertNotIn(self.package.package_id, self.truck.cargo)
 

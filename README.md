@@ -72,7 +72,7 @@ tests/
 
 ## 🎯 Why This Project Stands Out
 
-- **Fully Automated**: Unlike many projects requiring manual truck and package assignments, this system intelligently automates every step, saving time and minimizing errors.
+- **Fully Automated**: Instead of manual truck and package assignments, this system intelligently automates every step, saving time and minimizing errors.
 - **Sophisticated Optimization**: Implements multiple advanced optimization strategies to deliver superior route efficiency and constraint compliance.
 - **Robust Architecture**: Clean modular design with clear separation of concerns, making it easily extendable for future enhancements.
 - **Exceptional Logging and Reporting**: Provides rich, informative outputs crucial for troubleshooting, transparency, and demonstrating system reliability.
@@ -91,7 +91,7 @@ tests/
 
    ```bash
    git clone https://github.com/jclark-14/wgups-routing-optimizer
-   cd wgups-routing
+   cd c950-dsa2
    ```
 
 2. Execute the program:

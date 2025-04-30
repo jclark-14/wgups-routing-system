@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, List, Set, Dict
+from typing import Optional, List, Set
 from wgups.constants import TIME_RE, TRUCK_RE, DIRECTION_MAP, START_TIME
 
 def time_from_str(note: str) -> datetime | None:
