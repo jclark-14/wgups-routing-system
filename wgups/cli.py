@@ -17,12 +17,12 @@ def run_program(optimizer: RouteOptimizer, single_run: bool = False, iterations:
     if single_run:
         print("Initializing simulation with Enhanced Optimization algorithm...")
         packages, trucks = run_simulation(optimizer)
-        print("\nSimulation completed successfully!")
+        print("\nSimulation completed!")
     else:
         print(f"Initializing package delivery optimization...")
         print(f"Starting route planning phase ({iterations} iterations)...")
         packages, trucks = run_simulation_with_planning(optimizer, iterations)
-        print("\nSimulation completed with optimal result!")
+        print("\nSimulation complete!")
     
     print("Starting interactive command-line interface...")
     run_cli(packages, trucks)

@@ -136,6 +136,10 @@ python3 -m tests.test_truck
 
 ## 📸 Screenshots
 
-_Coming soon! Visual examples of the CLI and system reports._
+## ✅ All Constraints Met, Optimized Delivery Plan
+
+All delivery constraints were met, including group integrity, truck limits, and early delivery deadlines, with optimized routing under the 140-mile limit.
+
+![Final Delivery Summary](resources/screenshots/route-summary.png)
 
 ---
