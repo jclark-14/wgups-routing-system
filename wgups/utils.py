@@ -107,3 +107,13 @@ def resolve_package_groups(packages) -> List[Set[int]]:
     if group_set:
         group.append(group_set)
     return group
+
+def calculate_center(cargo_ids, packages):
+    """Calculate the geographical center of a set of packages."""
+    if not cargo_ids:
+        return None
+        
+    # For simplicity, return the address of a random package in cargo
+    # A more sophisticated approach would calculate a true center
+    import random
+    return packages.lookup(random.choice(cargo_ids)).address

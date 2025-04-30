@@ -52,3 +52,17 @@ def execute_route(truck, packages, distance_matrix, address_map, max_iterations=
     return_distance = get_distance(location, "hub", distance_matrix, address_map)
     truck.drive(return_distance)
     truck.return_to_hub()
+    
+    
+def estimate_route_mileage(route, packages, distance_matrix, address_map):
+    """Estimate the mileage for a route without actually executing it."""
+    total = 0.0
+    loc = 'hub'
+    for pid in route:
+        pkg = packages.lookup(pid)
+        dist = get_distance(loc, pkg.address, distance_matrix, address_map)
+        total += dist
+        loc = pkg.address
+    # Return trip
+    total += get_distance(loc, 'hub', distance_matrix, address_map)
+    return total
