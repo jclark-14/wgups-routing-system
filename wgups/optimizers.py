@@ -31,7 +31,6 @@ class NN2OptOptimizer(RouteOptimizer):
         
         # Split into deadline (<=10:30) and other packages
         deadlines, others = self._categorize_packages(current_cargo, packages)
-        print(f"deadlines: {deadlines}, others: {others}, truck: {truck}")
         # For small deadline sets, try all permutations to meet deadlines
         if deadlines and len(deadlines) <= 5:
 
@@ -44,9 +43,7 @@ class NN2OptOptimizer(RouteOptimizer):
 
         # nearest neighbor, then refine with 2-opt
         route = self._nearest_neighbor(current_cargo, packages, distance_matrix, address_map)
-        print(f"route after NN in optimization: {route}")
         optimized = self._apply_2opt(route, packages, distance_matrix, address_map)
-        print(f"route after NN+2opt in optimization: {optimized}")
 
         # Append any deferred (address‐correction) packages at end
         return optimized + deferred
@@ -120,7 +117,6 @@ class NN2OptOptimizer(RouteOptimizer):
     ) -> List[int]:
         route = []
         remaining = set(pids)
-        print(f"remaining: len: {len(remaining)}, {remaining}")
         loc = 'hub'
         # pick all early deadlines first
         early = [(pid, packages.lookup(pid).deadline_time)
@@ -148,7 +144,6 @@ class NN2OptOptimizer(RouteOptimizer):
             route.append(nxt)
             remaining.remove(nxt)
             loc = packages.lookup(nxt).get_address(packages.truck.time)
-            print(f"route: {route}")
         return route
 
     def _apply_2opt(self, route: List[int], packages: HashTable, distance_matrix, address_map) -> List[int]:

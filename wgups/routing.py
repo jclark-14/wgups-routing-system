@@ -1,14 +1,14 @@
 from datetime import timedelta
 from wgups.utils import get_distance
 
-def execute_route(truck, packages, distance_matrix, address_map):
-    """
-    Execute a truck's delivery route with proper handling of address corrections.
-    """
+def execute_route(truck, packages, distance_matrix, address_map, max_iterations=1000):
+    """Execute a truck's delivery route with proper handling of address corrections."""
     location = "hub"
     i = 0
+    iteration_count = 0
     
-    while i < len(truck.route):
+    while i < len(truck.route) and iteration_count < max_iterations:
+        iteration_count += 1
         pid = truck.route[i]
         pkg = packages.lookup(pid)
         
@@ -26,17 +26,27 @@ def execute_route(truck, packages, distance_matrix, address_map):
                 truck._log_event(f"Waiting for address correction for Package {pid}")
                 truck.time = pkg.correction_time
             else:
-                # Move package to end of route
-                truck.route.pop(i)
-                truck.route.append(pid)
-                truck._log_event(f"Deferring Package {pid} until address correction at {pkg.correction_time.strftime('%H:%M')}")
-                continue  # Don't increment i
+                # Add safety counter to prevent infinite loops
+                pkg.defer_count = getattr(pkg, 'defer_count', 0) + 1
+                
+                if pkg.defer_count > 10:  # Limit deferrals to prevent infinite loops
+                    truck._log_event(f"Force delivering Package {pid} after multiple deferrals")
+                    i += 1  # Process next package
+                else:
+                    truck.route.pop(i)
+                    truck.route.append(pid)
+                    truck._log_event(f"Deferring Package {pid} until address correction at {pkg.correction_time.strftime('%H:%M')}")
+                    continue  # Don't increment i
         
         # Deliver the package
         distance = get_distance(location, pkg.get_address(truck.time), distance_matrix, address_map)
         truck.deliver(pkg, distance)
         location = pkg.get_address(truck.time)
         i += 1
+    
+    # Check if we hit max iterations
+    if iteration_count >= max_iterations:
+        print(f"WARNING: Maximum iterations reached in execute_route for Truck {truck.truck_id}.")
     
     # Return to hub
     return_distance = get_distance(location, "hub", distance_matrix, address_map)

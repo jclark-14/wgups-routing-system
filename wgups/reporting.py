@@ -269,8 +269,8 @@ def run_cli(packages, trucks):
     
     while True:
         print("\n" + "="*80)
-        print(f"{'WGUPS PACKAGE TRACKING SYSTEM':^80}")
-        print("="*80)
+        # print(f"{'WGUPS PACKAGE TRACKING SYSTEM':^80}")
+        # print("="*80)
         print("\nCommands:")
         print("  1. Check status of a specific package")
         print("  2. Check status of all packages at a specific time")

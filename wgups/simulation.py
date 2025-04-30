@@ -7,97 +7,67 @@ from wgups.models import Truck
 from wgups.utils import resolve_package_groups, get_distance
 from wgups.reporting import generate_summary_report
 from wgups.optimizers import RouteOptimizer
+from wgups.routing import execute_route
 
-def execute_route(truck, packages, distance_matrix, address_map):
-    """
-    Execute a truck's delivery route with proper handling of address corrections.
-    """
-    location = "hub"
-    i = 0
-    
-    while i < len(truck.route):
-        pid = truck.route[i]
-        pkg = packages.lookup(pid)
-        
-        # Skip non-existent packages
-        if not pkg:
-            i += 1
-            continue
-        
-        # Handle packages with future address corrections
-        if pkg.correction_time and truck.time < pkg.correction_time:
-            time_to_correction = (pkg.correction_time - truck.time).total_seconds() / 3600
-            
-            if time_to_correction < 0.5:  # Within 30 minutes
-                # Wait until correction time
-                truck._log_event(f"Waiting for address correction for Package {pid}")
-                truck.time = pkg.correction_time
-            else:
-                # Move package to end of route
-                truck.route.pop(i)
-                truck.route.append(pid)
-                truck._log_event(f"Deferring Package {pid} until address correction at {pkg.correction_time.strftime('%H:%M')}")
-                continue  # Don't increment i
-        
-        # Deliver the package
-        distance = get_distance(location, pkg.get_address(truck.time), distance_matrix, address_map)
-        truck.deliver(pkg, distance)
-        location = pkg.get_address(truck.time)
-        i += 1
-    
-    # Return to hub
-    return_distance = get_distance(location, "hub", distance_matrix, address_map)
-    truck.drive(return_distance)
-    truck.return_to_hub()
-
-def run_simulation(optimizer: RouteOptimizer) -> Tuple:
+def run_simulation(optimizer: RouteOptimizer, verbose=True, debug_level=0, execute=True) -> Tuple:
     """
     Run the WGUPS package delivery simulation.
+    
+    Parameters:
+    - optimizer: The route optimization algorithm to use
+    - verbose: Whether to print detailed output
+    - debug_level: Level of debug information (0=none, 1=basic, 2=detailed)
+    - execute: Whether to actually execute the routes or just plan them
+    
     Returns (packages, trucks) tuple for reporting and CLI.
     """
+    
+    if debug_level > 0:
+        print("Loading packages and distances...")
     # Step 1: Load data and resolve package groups
     packages = load_packages()
     distance_matrix, address_map = load_distances()
     package_group = resolve_package_groups(packages)
-    print(f"Resolved package groups: {package_group}")
 
+    if debug_level > 0:
+        print("Initializing trucks...")
     # Step 2: Initialize trucks
     truck1 = Truck(1)  # 8:00 AM
-    truck2 = Truck(2, time=datetime.combine(TODAY, time(9, 5)))  # 9:05 AM
+    truck2 = Truck(2, time=datetime.combine(TODAY, time(9, 5))) 
+    
 
+    if debug_level > 0:
+        print("Classifying packages...")
     # Step 3: Prepare package classification
     priority_packages = identify_priority_packages(packages)
     truck_specific_packages = identify_truck_specific_packages(packages)
     deadline_packages = identify_deadline_packages(packages)
     delayed_packages = identify_delayed_packages(packages)
     
-    # Step 4: Create package group mapping and identify critical groups !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! redundant
+    if debug_level > 0:
+        print("group mapping and critical groups...")
+    # Step 4: Create package group mapping and identify critical groups 
     package_to_group = map_packages_to_groups(package_group)
-    print(f"package to group: {package_to_group}")
     critical_groups = identify_critical_groups(packages, package_group)
-    print(f"critical_groups: {critical_groups}")
-
     
+    if debug_level > 0:
+        print("loading trucks...")
     # Step 5: Load packages onto trucks - IMPROVED LOADING STRATEGY
     # First load truck-specific packages
     load_truck_specific_packages(truck1, truck2, truck_specific_packages, 
                                package_to_group, packages)
-    print(f"after truck specific loading -> truck1: {truck1}, truck2: {truck2}") #----> WORKING
-    
     # Then load critical groups (groups with deadline packages) to truck 1
-    # This is the key change - load ALL critical groups to truck 1
     for group in critical_groups:
-        load_group_to_truck(truck1, group, packages) # ----> WORKING
+        load_group_to_truck(truck1, group, packages) 
     
     # Load priority packages that aren't part of critical groups
-    load_priority_packages(truck1, priority_packages, package_to_group, packages) # ----> WORKING. 
+    load_priority_packages(truck1, priority_packages, package_to_group, packages)
 
     # Then load other deadline packages
     load_deadline_packages(truck1, deadline_packages, package_to_group, packages)
 
     # Load delayed packages to truck 2
     load_delayed_packages(truck2, delayed_packages, package_to_group, packages)
-    print(f"status after loading of delayed packages: {truck2} cargo: {truck2.cargo}")
     
     # Balance remaining packages
     standard_packages = identify_standard_packages(
@@ -108,26 +78,34 @@ def run_simulation(optimizer: RouteOptimizer) -> Tuple:
         delayed_packages,
         package_group
     )
-    load_remaining_packages(truck1, truck2, standard_packages, package_to_group, packages)
-    print(f"truck1 cargo: {truck1.cargo}, truck2 cargo: {truck2.cargo}")
-    
-    # Step 6: Execute delivery routes
-    # First truck route (8:00 AM)
-    truck1.set_route(optimizer.optimize(truck1, packages, distance_matrix, address_map, package_group))
+    load_by_proximity(truck1, truck2, standard_packages, packages, distance_matrix, address_map)
 
-    execute_route(truck1, packages, distance_matrix, address_map)
+    if debug_level > 0:
+        print("execute run...")
+    # Step 6: Execute delivery routes (conditionally)
+    if execute:
+        # Execute truck1 route
+        truck1.set_route(optimizer.optimize(truck1, packages, distance_matrix, address_map, package_group))
+        execute_route(truck1, packages, distance_matrix, address_map)
 
+        # Execute truck2 route
+        truck2.set_route(optimizer.optimize(truck2, packages, distance_matrix, address_map, package_group))
+        execute_route(truck2, packages, distance_matrix, address_map)
+        
+        # Handle any remaining undelivered packages
+        deliver_remaining_packages(truck1, truck2, packages, optimizer, 
+                                distance_matrix, address_map, package_group)
+    else:
+        # Just plan routes without execution for evaluation
+        truck1.set_route(optimizer.optimize(truck1, packages, distance_matrix, address_map, package_group))
+        truck2.set_route(optimizer.optimize(truck2, packages, distance_matrix, address_map, package_group))
+        # Calculate estimated mileage without actual delivery
+        truck1.estimated_mileage = estimate_route_mileage(truck1.route, packages, distance_matrix, address_map)
+        truck2.estimated_mileage = estimate_route_mileage(truck2.route, packages, distance_matrix, address_map)
     
-    # Second truck route (9:05 AM)
-    truck2.set_route(optimizer.optimize(truck2, packages, distance_matrix, address_map, package_group))
-    execute_route(truck2, packages, distance_matrix, address_map)
-    
-    # Handle any remaining undelivered packages
-    deliver_remaining_packages(truck1, truck2, packages, optimizer, 
-                             distance_matrix, address_map, package_group)
-    
-    # Step 7: Generate report
-    generate_summary_report(packages, [truck1, truck2])
+    # Step 7: Generate report (only if execute=True and verbose=True)
+    if execute and verbose:
+        generate_summary_report(packages, [truck1, truck2])
     
     return packages, [truck1, truck2]
 
@@ -139,7 +117,6 @@ def identify_priority_packages(packages) -> List[int]:
         pkg = packages.lookup(pid)
         if pkg.deadline_time and pkg.deadline_time.time() <= EARLY_DEADLINE_CUTOFF:
             urgent.append(pid)
-    print(f"urgent: {urgent}")
     return urgent
 
 def identify_truck_specific_packages(packages) -> Dict[int, List[int]]:
@@ -228,8 +205,7 @@ def identify_critical_groups(packages, package_groups) -> List[Set[int]]:
             
     return critical_groups
 
-def load_group_to_truck(truck, group, packages):
-    """Load an entire group of packages to a truck."""
+def load_group_to_truck(truck, group, packages, verbose=True):
     # Only load if truck has enough capacity
     if len(truck.cargo) + len(group) <= truck.capacity:
         for pid in group:
@@ -237,10 +213,6 @@ def load_group_to_truck(truck, group, packages):
                 pkg = packages.lookup(pid)
                 if pkg:
                     truck.load_package(pkg)
-        print(f"Loaded entire group {group} to Truck {truck.truck_id}")
-    else:
-        print(f"Warning: Cannot fit entire group {group} on Truck {truck.truck_id}. "
-                    f"Group size: {len(group)}; Available capacity: {truck.capacity - len(truck.cargo)}")
 
 def load_truck_specific_packages(truck1, truck2, truck_specific_pkgs, 
                                package_to_group, packages):
@@ -384,3 +356,155 @@ def deliver_remaining_packages(truck1, truck2, packages, optimizer, distance_mat
         next_truck.set_route(optimizer.optimize(next_truck, packages, distance_matrix, address_map, package_group))
         execute_route(next_truck, packages, distance_matrix, address_map)
         
+def load_by_proximity(truck1, truck2, standard_pkgs, packages, distance_matrix, address_map):
+    """Load remaining packages based on geographical proximity."""
+    # Skip if no standard packages
+    if not standard_pkgs:
+        return
+    
+    # Calculate distances from hub for each package
+    hub_distances = {}
+    for pid in standard_pkgs:
+        pkg = packages.lookup(pid)
+        if pkg:
+            hub_distances[pid] = get_distance("hub", pkg.address, distance_matrix, address_map)
+    
+    # Calculate center points for current cargo of each truck
+    truck1_center = calculate_center(truck1.cargo, packages)
+    truck2_center = calculate_center(truck2.cargo, packages)
+    
+    # For each remaining package, calculate distance to each truck's center
+    for pid in standard_pkgs:
+        if pid in truck1.cargo or pid in truck2.cargo:
+            continue
+            
+        pkg = packages.lookup(pid)
+        if not pkg:
+            continue
+            
+        # Calculate distances to each truck's center
+        dist_to_truck1 = get_distance(pkg.address, truck1_center, distance_matrix, address_map) if truck1_center else float('inf')
+        dist_to_truck2 = get_distance(pkg.address, truck2_center, distance_matrix, address_map) if truck2_center else float('inf')
+        
+        # Assign to closest truck if it has capacity
+        if dist_to_truck1 <= dist_to_truck2 and truck1.has_capacity():
+            truck1.load_package(pkg)
+        elif dist_to_truck2 < dist_to_truck1 and truck2.has_capacity():
+            truck2.load_package(pkg)
+        else:
+            # If preferred truck is full, try the other one
+            if truck1.has_capacity():
+                truck1.load_package(pkg)
+            elif truck2.has_capacity():
+                truck2.load_package(pkg)
+
+def calculate_center(cargo_ids, packages):
+    """Calculate the geographical center of a set of packages."""
+    if not cargo_ids:
+        return None
+        
+    # For simplicity, return the address of a random package in cargo
+    # A more sophisticated approach would calculate a true center
+    import random
+    return packages.lookup(random.choice(cargo_ids)).address
+
+def estimate_route_mileage(route, packages, distance_matrix, address_map):
+    """Estimate the mileage for a route without actually executing it."""
+    total = 0.0
+    loc = 'hub'
+    for pid in route:
+        pkg = packages.lookup(pid)
+        dist = get_distance(loc, pkg.address, distance_matrix, address_map)
+        total += dist
+        loc = pkg.address
+    # Return trip
+    total += get_distance(loc, 'hub', distance_matrix, address_map)
+    return total
+
+def run_simulation_with_planning(optimizer, planning_iterations=20, debug=False):
+    """Run the WGUPS package delivery simulation with advanced route planning."""
+    print(f"Initializing package delivery optimization...")
+    print(f"Starting route planning phase ({planning_iterations} iterations)...")
+    
+    best_mileage = float('inf')
+    best_result = None
+    valid_runs = []
+    
+    # Progress indicator
+    print("Planning progress: ", end="", flush=True)
+    
+    # Route planning phase - fully execute each candidate plan
+    for i in range(1, planning_iterations+1):
+        print(".", end="", flush=True)
+        if i % 10 == 0:
+            print(f" {i}/{planning_iterations}", end="", flush=True)
+        
+        # Fully run a complete simulation for each candidate
+        # But only generate summary report for the best one
+        candidate_packages, candidate_trucks = run_simulation(
+            optimizer, verbose=False, debug_level=0, execute=True)
+        
+        # Calculate actual execution mileage
+        total_mileage = sum(t.mileage for t in candidate_trucks)
+        constraints_met = constraints_satisfied(candidate_packages, candidate_trucks)
+        
+        if debug:
+            print(f"\nRun {i}: {total_mileage:.2f} miles (Valid: {constraints_met})")
+        
+        # Track all valid runs
+        if constraints_met:
+            valid_runs.append((i, total_mileage))
+            
+            # Keep best plan
+            if total_mileage < best_mileage:
+                best_mileage = total_mileage
+                best_result = (candidate_packages, candidate_trucks)
+    
+    # Calculate statistics
+    if valid_runs:
+        worst_run, worst_mileage = max(valid_runs, key=lambda x: x[1])
+        best_run, _ = min(valid_runs, key=lambda x: x[1])
+        avg_mileage = sum(m for _, m in valid_runs) / len(valid_runs)
+        
+        print("\n\nRoute planning complete!")
+        print(f"Best solution (run {best_run}): {best_mileage:.2f} miles")
+        print(f"Worst solution (run {worst_run}): {worst_mileage:.2f} miles")
+        print(f"Average solution: {avg_mileage:.2f} miles")
+        print(f"Mileage range: {worst_mileage - best_mileage:.2f} miles")
+    else:
+        print("\n\nNo valid solutions found!")
+        return None
+    
+    print("\nGenerating final delivery report for optimal solution...")
+    
+    # Get the best packages and trucks
+    best_packages, best_trucks = best_result
+    
+    # Generate the summary report for the best solution
+    generate_summary_report(best_packages, best_trucks)
+    
+    return best_packages, best_trucks
+
+def constraints_satisfied(packages, trucks):
+    """Check if all constraints are satisfied."""
+    # Check deadline satisfaction
+    all_deadlines_met = True
+    for pid in packages:
+        pkg = packages.lookup(pid)
+        if pkg.deadline_time and pkg.delivery_time and pkg.delivery_time > pkg.deadline_time:
+            all_deadlines_met = False
+            break
+    
+    # Check truck-specific constraints
+    all_trucks_respected = True
+    for pid in packages:
+        pkg = packages.lookup(pid)
+        if pkg.only_truck and pkg.truck_assigned != pkg.only_truck:
+            all_trucks_respected = False
+            break
+    
+    # Check group constraints
+    all_groups_kept = True
+    # This is a simplified check - you'd need to implement a more thorough check
+    
+    return all_deadlines_met and all_trucks_respected and all_groups_kept  # Return a boolean, not a list

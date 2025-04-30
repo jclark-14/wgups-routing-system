@@ -1,0 +1,41 @@
+Date : 2025-04-29 18:16:04
+Directory : c:\Users\jodyc\code\WGU-Projects\c950-dsa2\tests
+Total : 14 files,  -1046 codes, -152 comments, -240 blanks, all -1438 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Python   |         14 |     -1,046 |       -152 |       -240 |     -1,438 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                   |         14 |     -1,046 |       -152 |       -240 |     -1,438 |
+| . (Files)                                                           |          4 |        151 |          3 |         39 |        193 |
+| ..                                                                  |         10 |     -1,197 |       -155 |       -279 |     -1,631 |
+| ..\wgups                                                            |         10 |     -1,197 |       -155 |       -279 |     -1,631 |
++---------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                            | language | code       | comment    | blank      | total      |
++---------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\tests\test_loaders.py    | Python   |         40 |          1 |         10 |         51 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\tests\test_package.py    | Python   |         47 |          2 |         13 |         62 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\tests\test_truck.py      | Python   |         49 |          0 |         10 |         59 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\tests\test_utils.py      | Python   |         15 |          0 |          6 |         21 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\__init__.py        | Python   |          0 |          0 |         -1 |         -1 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\constants.py       | Python   |        -17 |         -4 |         -4 |        -25 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\data_loader.py     | Python   |        -68 |         -9 |        -16 |        -93 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\data_structures.py | Python   |        -67 |         -2 |        -19 |        -88 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\models.py          | Python   |       -146 |         -9 |        -31 |       -186 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\optimizers.py      | Python   |       -191 |        -16 |        -29 |       -236 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\reporting.py       | Python   |       -338 |        -49 |        -75 |       -462 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\routing.py         | Python   |        -31 |         -6 |         -7 |        -44 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\simulation.py      | Python   |       -266 |        -48 |        -73 |       -387 |
+| c:\Users\jodyc\code\WGU-Projects\c950-dsa2\wgups\utils.py           | Python   |        -73 |        -12 |        -24 |       -109 |
+| Total                                                               |          |     -1,046 |       -152 |       -240 |     -1,438 |
++---------------------------------------------------------------------+----------+------------+------------+------------+------------+
