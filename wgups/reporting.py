@@ -2,25 +2,26 @@ from wgups.constants import  STATUS_DELIVERED
 
 def generate_summary_report(packages, trucks):
     """
-    Generate a comprehensive summary report showing all constraint satisfaction,
-    delivery times, and other useful metrics.
+    Generate and print a complete delivery summary, including:
+    - Mileage totals and constraint
+    - Deadline satisfaction
+    - Group delivery integrity
+    - Truck-specific and capacity constraints
+    - Driver usage check
     """
     delivered_count = sum(1 for pid in packages if packages.lookup(pid).status == STATUS_DELIVERED)
     total_mileage = sum(t.mileage for t in trucks)
     
-    # Header
     print("\n" + "="*80)
     print(f"{'WGUPS DELIVERY REPORT':^80}")
     print("="*80)
     
-    #Generate reports
     generate_mileage_report(trucks, total_mileage)
     generate_constraint_report(packages)
     package_relationships = generate_group_constraint_report(packages)
     truck_constraints_met, truck_specific_pkgs = generate_truck_report(packages, trucks)
     deadline_met, deadline_packages = generate_constraint_report(packages)
 
-    # Final status summary
     print("\n" + "="*80)
     print(f"{'FINAL STATUS SUMMARY':^80}")
     print("="*80)
@@ -35,7 +36,11 @@ def generate_summary_report(packages, trucks):
 
 
 def generate_mileage_report(trucks, total_mileage):
-    # Mileage Summary
+    """
+    Print the mileage per truck and determine whether total mileage
+    satisfies the requirement of under 140 miles.
+    """
+
     print(f"\n{'MILEAGE SUMMARY':^80}")
     print("-"*80)
     for truck in trucks:
@@ -49,10 +54,16 @@ def generate_mileage_report(trucks, total_mileage):
 
 
 def generate_constraint_report(packages):
+    """
+    Check and print how many deadline packages were delivered on time.
+    
+    Returns:
+        - List of package IDs that met their deadline
+        - List of all deadline package IDs
+    """
     print(f"\n{'CONSTRAINT SATISFACTION':^80}")
     print("-"*80)
     
-    # Deadline Satisfaction
     deadline_packages = []
     deadline_met = []
     for pid in packages:
@@ -74,10 +85,14 @@ def generate_constraint_report(packages):
         
 
 def generate_group_constraint_report(packages):
+    """
+    Verify that all packages with 'must be delivered with' constraints
+    were loaded onto the same truck. Reports violations if any.
+    """
+
     print(f"\n{'GROUP CONSTRAINTS':^80}")
     print("-"*80)
 
-    # First find all package "must be delivered with" relationships
     package_relationships = {}
     for pid in packages:
         pkg = packages.lookup(pid)
@@ -91,7 +106,6 @@ def generate_group_constraint_report(packages):
         
         for pid, group_with in package_relationships.items():
             pkg = packages.lookup(pid)
-            # Check if all related packages were delivered by the same truck
             all_same_truck = True
             for related_pid in group_with:
                 related_pkg = packages.lookup(related_pid)
@@ -101,8 +115,6 @@ def generate_group_constraint_report(packages):
             
             status = "✅" if all_same_truck else "❌"
             truck_info = f"Truck {pkg.truck_assigned}" if pkg.truck_assigned else "Not assigned"
-            
-            # Convert list to string for formatting
             group_str = str(sorted(list(group_with)))
             
             print(f"{pid:<12}{group_str:<40}{status} {truck_info}")
@@ -112,6 +124,12 @@ def generate_group_constraint_report(packages):
         
 
 def generate_truck_report(packages, trucks):
+    """
+    Print and validate truck-specific delivery constraints, truck capacities,
+    and total active trucks used. Returns:
+        - List of packages that met their truck assignment requirement
+        - List of all truck-specific packages
+    """
     print(f"\n{'TRUCK-SPECIFIC CONSTRAINTS':^80}")
     print("-"*80)
     
@@ -132,11 +150,9 @@ def generate_truck_report(packages, trucks):
         violated = [pid for pid in truck_specific_pkgs if pid not in truck_constraints_met]
         print(f"{'VIOLATED TRUCK CONSTRAINTS:':<40} ❌ {violated}")
     
-    # Truck and Driver Constraint Verification
     print(f"\n{'TRUCK & DRIVER CONSTRAINTS':^80}")
     print("-"*80)
 
-    # Check truck capacity constraint
     capacity_violations = []
     for truck in trucks:
         max_cargo = 0
@@ -151,33 +167,30 @@ def generate_truck_report(packages, trucks):
         print(f"Truck {truck.truck_id} maximum cargo: {max_cargo}/16 packages")
         if max_cargo > 16:
             capacity_violations.append(truck.truck_id)
-         # Simply check how many trucks are operating in total
+
     active_trucks = sum(1 for truck in trucks if truck.mileage > 0)
         
-    # Report on driver constraint
     print(f"\nTotal active trucks: {active_trucks}/2")
     if active_trucks <= 2:
         print("✅ Driver constraint satisfied: No more than 2 trucks used")
     else:
         print("❌ Driver constraint violated: More than 2 trucks used")
 
-    # Report on capacity constraint
     if not capacity_violations:
         print("✅ Capacity constraint satisfied: No truck exceeds 16 packages")
     else:
         print(f"❌ Capacity constraint violated: Trucks {capacity_violations} exceeded capacity")
 
-    # Show truck activity periods in a simpler format
+
     print("\nTruck Activity Periods:")
     for truck in trucks:
         if truck.mileage > 0:
-            # Find first and last time in log
             try:
                 first_entry = truck.log[0]
                 first_time = first_entry[1:6]  # Format: [HH:MM]
                 
                 last_entry = truck.log[-1]
-                last_time = last_entry[1:6]  # Format: [HH:MM]
+                last_time = last_entry[1:6]  
                 
                 print(f"  Truck {truck.truck_id}: Active from {first_time} to {last_time}")
             except:
@@ -185,12 +198,14 @@ def generate_truck_report(packages, trucks):
     return truck_constraints_met, truck_specific_pkgs
     
 def generate_deadline_report(packages):
-    # Special Case Packages
+    """
+    Show delivery times for packages with address corrections and deadlines.
+    Useful for visual timeline inspection and grading edge cases.
+    """
     print(f"\n{'SPECIAL CASE PACKAGES':^80}")
     print("-"*80)
     
-    # Address correction packages
-    corrected_pkgs = []
+    corrected_pkgs = [] # Corrected address packages
     
     for pid in packages:
         pkg = packages.lookup(pid)

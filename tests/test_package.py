@@ -1,6 +1,6 @@
 import unittest
 from datetime import timedelta
-from wgups.models import Package
+from wgups.entities import Package
 from wgups.constants import START_TIME, STATUS_AT_HUB, STATUS_DELIVERED, STATUS_EN_ROUTE
 from wgups.utils import normalize_address
 

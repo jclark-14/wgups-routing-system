@@ -1,7 +1,7 @@
 import unittest
 from wgups.data_loader import load_packages, load_distances
 from wgups.data_structures import HashTable
-from wgups.models import Package
+from wgups.entities import Package
 from wgups.constants import START_TIME
 
 class TestLoadPackagesRealFile(unittest.TestCase):

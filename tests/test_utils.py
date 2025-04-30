@@ -1,6 +1,6 @@
 import unittest
 from wgups.utils import normalize_address, time_from_str, truck_from_note, resolve_package_groups
-from wgups.models import Package
+from wgups.entities import Package
 from wgups.data_structures import HashTable
 
 class TestNormalizeAddress(unittest.TestCase):

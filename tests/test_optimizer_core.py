@@ -1,6 +1,6 @@
 import unittest
 from wgups.optimizer_core import nearest_neighbor, apply_2opt
-from wgups.models import Package, Truck
+from wgups.entities import Package, Truck
 from wgups.data_structures import HashTable
 
 class TestRoutingAlgorithms(unittest.TestCase):

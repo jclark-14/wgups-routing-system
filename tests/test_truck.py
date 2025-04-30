@@ -1,6 +1,6 @@
 import unittest
 from datetime import timedelta
-from wgups.models import Truck, Package
+from wgups.entities import Truck, Package
 from wgups.constants import STATUS_AT_HUB, STATUS_EN_ROUTE, STATUS_DELIVERED
 
 class TestTruck(unittest.TestCase):

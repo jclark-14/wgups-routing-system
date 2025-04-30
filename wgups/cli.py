@@ -5,19 +5,15 @@ from wgups.optimizer_core import RouteOptimizer
 
 def run_program(optimizer: RouteOptimizer, single_run: bool = False, iterations: int = 20):
     """
-    Main program runner that initializes and executes the WGUPS routing program.
+    Main program runner. Initializes and executes the WGUPS routing program.
+    If single_run is True, bypass the planning phase and runs a one-shot simulation.
     
-    Args:
-        optimizer: The optimization algorithm to use for route planning
-        single_run: Whether to run a single simulation or use planning approach
-        iterations: Number of iterations for planning approach
     """
-    # Display welcome message
+    
     print("="*80)
     print(f"{'WGUPS PACKAGE DELIVERY SYSTEM':^80}")
     print("="*80)
     
-    # Run appropriate simulation approach
     if single_run:
         print("Initializing simulation with Enhanced Optimization algorithm...")
         packages, trucks = run_simulation(optimizer)
@@ -28,13 +24,13 @@ def run_program(optimizer: RouteOptimizer, single_run: bool = False, iterations:
         packages, trucks = run_simulation_with_planning(optimizer, iterations)
         print("\nSimulation completed with optimal result!")
     
-    # Start interactive CLI
     print("Starting interactive command-line interface...")
     run_cli(packages, trucks)
 
 def run_cli(packages, trucks):
     """
     Run an interactive command-line interface for checking package status and mileage.
+    This menu-driven CLI supports real-time queries and generating snapshots for demo screenshots.
     """
     total_mileage = sum(t.mileage for t in trucks if hasattr(t, 'mileage'))
     
@@ -81,7 +77,7 @@ def run_cli(packages, trucks):
                 for pid in range(1, 41):
                     pkg = packages.lookup(pid)
                     if pkg:
-                        status = _get_status_at_time(pkg, check_datetime)
+                        status = _get_status_at_time(pkg, check_datetime)   # Determine package status based on time-relative fields (available, departure, delivery)
                         deadline = pkg.deadline_time.strftime("%H:%M") if pkg.deadline_time else "EOD"
                         address = _get_address_at_time(pkg, check_datetime)
                         
@@ -96,9 +92,10 @@ def run_cli(packages, trucks):
                     print(f"  Truck {truck.truck_id}: {truck.mileage:.2f} miles")
                     
         elif choice == '4':
+            # Used to visually inspect truck and package status during key time ranges. Useful for project screenshots or audits.
             _show_status_snapshot_menu(packages, trucks)
                 
-        elif choice == '5':
+        elif choice == '5': # Generates full delivery and constraint compliance report
             from wgups.reporting import generate_summary_report
             generate_summary_report(packages, trucks)
             
@@ -155,14 +152,13 @@ def _display_package_details(package):
     print(f"Package Weight: {package.weight} kilos")
     print(f"Delivery Deadline: {package.deadline}")
     
-    # Status information
     print(f"Delivery Status: {package.status}")
     if package.departure_time:
         print(f"Departure Time: {package.departure_time.strftime('%H:%M')}")
     if package.delivery_time:
         print(f"Delivery Time: {package.delivery_time.strftime('%H:%M')}")
     
-    # Special notes
+
     if package.note:
         print(f"Special Notes: {package.note}")
     if package.correction_time:
@@ -174,19 +170,17 @@ def _display_package_details(package):
 
 def _show_status_snapshot(packages, trucks, start_time, end_time):
     """Show a snapshot of all packages and trucks at a specific time range"""
-    check_time = start_time + (end_time - start_time) // 2  # Use middle of range
+    check_time = start_time + (end_time - start_time) // 2  # Use middle of range for snapshot
     
     print(f"\nPackage Status Snapshot ({check_time.strftime('%H:%M')} - between "
           f"{start_time.strftime('%H:%M')} and {end_time.strftime('%H:%M')}):")
     print("-"*80)
     
-    # Show truck status
     print("\nTruck Status:")
     for truck in trucks:
         if not hasattr(truck, 'log'):
             continue
             
-        # Determine truck status at this time
         status = "Not dispatched"
         location = "Hub"
         cargo = []
@@ -203,7 +197,7 @@ def _show_status_snapshot(packages, trucks, start_time, end_time):
                         status = "Initialized"
                     elif "Route assigned" in entry:
                         status = "Route assigned"
-                        cargo = eval(entry.split("Route assigned: ")[1])  # Extract route
+                        cargo = eval(entry.split("Route assigned: ")[1])
                     elif "Delivered Package" in entry:
                         status = "En route"
                         delivered_pid = int(entry.split("Delivered Package ")[1].split(" ")[0])
@@ -221,7 +215,6 @@ def _show_status_snapshot(packages, trucks, start_time, end_time):
         if cargo:
             print(f"  Cargo: {cargo}")
     
-    # Show package status
     print("\nPackage Status:")
     print(f"{'ID':^4}|{'Status':^30}|{'Address':^30}|{'Deadline':^10}|{'Weight':^6}")
     print("-"*80)
