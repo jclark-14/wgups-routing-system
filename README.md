@@ -95,7 +95,7 @@ tests/
 
    ```bash
    git clone https://github.com/jclark-14/wgups-routing-optimizer
-   cd c950-dsa2
+   cd wgups-routing-system
    ```
 
 2. Execute the program:
@@ -141,13 +141,13 @@ python3 -m tests.optimizer_core
 
 ## 📷 Program Screenshots
 
-### 🧭 CLI Menu and Individual Package Check
-
-![CLI Demo](resources/screenshots/packages-status-example.png)
-
 ### 📋 Final Summary Report (All Constraints Met)
 
 ![Final Summary](resources/screenshots/route-summary.png)
+
+### 🧭 CLI Menu and Individual Package Check
+
+![CLI Demo](resources/screenshots/packages-status-example.png)
 
 ### 🚛 Total Mileage Display
 
