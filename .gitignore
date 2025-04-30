@@ -8,10 +8,6 @@ __pycache__/
 # OS
 .DS_Store
 
-# Data
-*.xlsx
-*.csv
-
 # Env
 .env
 
