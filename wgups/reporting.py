@@ -1,4 +1,4 @@
-from wgups.constants import  STATUS_DELIVERED, START_TIME
+from wgups.constants import  STATUS_DELIVERED
 
 def generate_summary_report(packages, trucks):
     """

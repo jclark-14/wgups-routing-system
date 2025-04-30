@@ -1,5 +1,3 @@
-# utils.py
-
 from datetime import datetime
 from typing import Optional, List, Set, Dict
 from wgups.constants import TIME_RE, TRUCK_RE, DIRECTION_MAP, START_TIME

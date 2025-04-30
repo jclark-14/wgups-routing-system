@@ -1,4 +1,3 @@
-from datetime import timedelta
 from wgups.utils import get_distance
 
 def execute_route(truck, packages, distance_matrix, address_map, max_iterations=1000):

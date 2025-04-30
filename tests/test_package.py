@@ -1,12 +1,11 @@
 import unittest
-from datetime import datetime, timedelta
+from datetime import timedelta
 from wgups.models import Package
 from wgups.utils import START_TIME
 
 class TestPackage(unittest.TestCase):
 
     def setUp(self):
-        # Create a basic package for testing
         self.pkg = Package(
             package_id=1,
             address="123 Main St",
@@ -47,7 +46,7 @@ class TestPackage(unittest.TestCase):
                          f"Delivered at {delivery_time.strftime('%H:%M')}")
 
     def test_get_address_correction(self):
-        # Simulate wrong address constraint
+        # Simulate wrong address
         self.pkg.corrected_address = "410 S State St"
         self.pkg.correction_time = START_TIME + timedelta(hours=2)
 

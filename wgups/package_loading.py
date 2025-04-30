@@ -89,46 +89,6 @@ def load_delayed_packages(truck, delayed_pkgs, package_to_group, packages):
             
         if truck.has_capacity():
             truck.load_package(packages.lookup(pid))
-
-# def load_remaining_packages(truck1, truck2, standard_pkgs, package_to_group, packages):
-#     """Load remaining standard packages with balanced distribution."""
-#     # Group remaining packages by their groups
-#     remaining_groups = {}
-#     for pid in standard_pkgs:
-#         if pid in package_to_group:
-#             group_id = package_to_group[pid]
-#             if group_id not in remaining_groups:
-#                 remaining_groups[group_id] = []
-#             remaining_groups[group_id].append(pid)
-    
-#     # Distribute remaining grouped packages
-#     for group_id, pids in remaining_groups.items():
-#         # Get the list of all packages in this group
-#         group_members = [p for p in packages if p in package_to_group 
-#                        and package_to_group[p] == group_id]
-        
-#         # Choose truck with more space
-#         truck1_space = truck1.capacity - len(truck1.cargo)
-#         truck2_space = truck2.capacity - len(truck2.cargo)
-        
-#         target_truck = truck1 if truck1_space >= truck2_space and truck1_space >= len(group_members) else truck2
-        
-#         if len(target_truck.cargo) + len(group_members) <= target_truck.capacity:
-#             load_group_to_truck(target_truck, group_members, packages)
-#             # Remove from standard packages list
-#             for pid in group_members:
-#                 if pid in standard_pkgs:
-#                     standard_pkgs.remove(pid)
-    
-#     # Distribute remaining individual packages
-#     remaining_packages = [pid for pid in standard_pkgs if pid not in truck1.cargo and pid not in truck2.cargo]
-    
-#     for pid in remaining_packages:
-#         # Choose truck with more remaining capacity
-#         target_truck = truck1 if truck1.capacity - len(truck1.cargo) >= truck2.capacity - len(truck2.cargo) else truck2
-        
-#         if target_truck.has_capacity():
-#             target_truck.load_package(packages.lookup(pid))
             
 def load_by_proximity(truck1, truck2, standard_pkgs, packages, distance_matrix, address_map):
     """Load remaining packages based on geographical proximity."""
