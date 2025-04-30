@@ -1,5 +1,7 @@
 # 📦 WGUPS Package Delivery Routing System
 
+![Python](https://img.shields.io/badge/python-3.12+-blue?logo=python&logoColor=white)
+
 ## 🚀 Project Overview
 
 The **WGUPS Package Delivery Routing System** is a sophisticated, command-line application designed to efficiently manage and optimize parcel deliveries for a simulated logistics scenario at Western Governors University. This system employs advanced routing algorithms and detailed constraint handling to ensure timely deliveries, minimal mileage, and seamless operations.
@@ -65,17 +67,19 @@ tests/
 ├── test_loaders.py          # Data loader tests
 ├── test_package.py          # Package model tests
 ├── test_truck.py            # Truck model tests
+├── test_optimizer_core.py   # Optimization algorithm tests
 └── test_utils.py            # Utility function tests
+
 ```
 
 ---
 
-## 🎯 Why This Project Stands Out
+## 💡 Highlights and Innovations
 
-- **Fully Automated**: Instead of manual truck and package assignments, this system intelligently automates every step, saving time and minimizing errors.
-- **Sophisticated Optimization**: Implements multiple advanced optimization strategies to deliver superior route efficiency and constraint compliance.
-- **Robust Architecture**: Clean modular design with clear separation of concerns, making it easily extendable for future enhancements.
-- **Exceptional Logging and Reporting**: Provides rich, informative outputs crucial for troubleshooting, transparency, and demonstrating system reliability.
+- **End-to-End Automation**: Packages are intelligently assigned to trucks and routes based on constraints like deadlines, delays, and delivery group. No need for manual input.
+- **Efficient Route Optimization**: Combines nearest neighbor, 2-opt, and permutation-based strategies to optimize delivery timing and mileage within project limits.
+- **Modular, Extensible Design**: Separates concerns across loaders, optimizers, and simulation logic, making it easy to maintain and expand.
+- **Detailed Reporting & Logging**: Built-in reporting tools validate performance and constraints at a glance, supporting transparency and easy debugging.
 
 ---
 
@@ -122,6 +126,7 @@ python3 -m tests.test_package
 python3 -m tests.test_loaders
 python3 -m tests.test_utils
 python3 -m tests.test_truck
+python3 -m tests.optimizer_core
 ```
 
 ---
@@ -134,12 +139,34 @@ python3 -m tests.test_truck
 
 ---
 
-## 📸 Screenshots
+## 📷 Program Screenshots
 
-## ✅ All Constraints Met, Optimized Delivery Plan
+### 🧭 CLI Menu and Individual Package Check
 
-All delivery constraints were met, including group integrity, truck limits, and early delivery deadlines, with optimized routing under the 140-mile limit.
+![CLI Demo](resources/screenshots/packages-status-example.png)
 
-![Final Delivery Summary](resources/screenshots/route-summary.png)
+### 📋 Final Summary Report (All Constraints Met)
+
+![Final Summary](resources/screenshots/route-summary.png)
+
+### 🚛 Total Mileage Display
+
+![Mileage Check](resources/screenshots/total-mileage.png)
+
+### 🕐 Package Status at 9:00 AM
+
+![Status @ 9:00](resources/screenshots/all-packages-0900.png)
+
+### 🕙 Package Status at 10:00 AM
+
+![Status @ 10:00](resources/screenshots/all-packages-1000.png)
+
+### 🕧 Final Status Snapshot
+
+![Status @ 12:37](resources/screenshots/all-packages-1237.png)
+
+### ✅ Unit Test Output
+
+![Unit Tests Passing](resources/screenshots/test-sample.png)
 
 ---

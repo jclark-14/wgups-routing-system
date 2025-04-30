@@ -176,45 +176,6 @@ def _show_status_snapshot(packages, trucks, start_time, end_time):
           f"{start_time.strftime('%H:%M')} and {end_time.strftime('%H:%M')}):")
     print("-"*80)
     
-    print("\nTruck Status:")
-    for truck in trucks:
-        if not hasattr(truck, 'log'):
-            continue
-            
-        status = "Not dispatched"
-        location = "Hub"
-        cargo = []
-        
-        for entry in truck.log:
-            # Parse time from log entry
-            try:
-                log_time_str = entry[1:7]  # Format: [HH:MM]
-                log_time = datetime.strptime(log_time_str, "%H:%M").time()
-                log_datetime = datetime.combine(TODAY, log_time)
-                
-                if log_datetime <= check_time:
-                    if "initialized" in entry:
-                        status = "Initialized"
-                    elif "Route assigned" in entry:
-                        status = "Route assigned"
-                        cargo = eval(entry.split("Route assigned: ")[1])
-                    elif "Delivered Package" in entry:
-                        status = "En route"
-                        delivered_pid = int(entry.split("Delivered Package ")[1].split(" ")[0])
-                        if delivered_pid in cargo:
-                            cargo.remove(delivered_pid)
-                    elif "Returned to hub" in entry:
-                        status = "At hub"
-                        cargo = []
-                else:
-                    break
-            except (ValueError, IndexError):
-                pass
-                
-        print(f"Truck {truck.truck_id}: {status} with {len(cargo)} packages")
-        if cargo:
-            print(f"  Cargo: {cargo}")
-    
     print("\nPackage Status:")
     print(f"{'ID':^4}|{'Status':^30}|{'Address':^30}|{'Deadline':^10}|{'Weight':^6}")
     print("-"*80)
