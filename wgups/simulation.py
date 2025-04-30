@@ -131,8 +131,6 @@ def run_simulation_with_planning(optimizer, planning_iterations=20):
     Returns:
         Tuple of (best_packages, best_trucks) from the best run.
     """
-    print(f"Initializing package delivery optimization...")
-    print(f"Starting route planning phase ({planning_iterations} iterations)...")
 
     best_mileage = float("inf")
     best_result = None
