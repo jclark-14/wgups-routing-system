@@ -94,7 +94,7 @@ tests/
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/jclark-14/wgups-routing-optimizer
+   git clone https://github.com/jclark-14/wgups-routing-system
    cd wgups-routing-system
    ```
 
