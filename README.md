@@ -4,7 +4,7 @@
 
 ## 🚀 Project Overview
 
-The **WGUPS Package Delivery Routing System** is a sophisticated, command-line application designed to efficiently manage and optimize parcel deliveries for a simulated logistics scenario at Western Governors University. This system employs advanced routing algorithms and detailed constraint handling to ensure timely deliveries, minimal mileage, and seamless operations.
+The **WGUPS Package Delivery Routing System** is a sophisticated command-line application designed to efficiently manage and optimize parcel deliveries for a simulated logistics scenario at WGU. This system employs advanced routing algorithms and detailed constraint handling to ensure timely deliveries, minimal mileage, and fully automated package loading, classification, and routing.
 
 ---
 
@@ -149,7 +149,7 @@ python3 -m tests.optimizer_core
 
 ![CLI Demo](resources/screenshots/packages-status-example.png)
 
-### 🚛 Total Mileage Display
+### 🚛 Total Mileage Display (Constraint: Total Mileage < 140 miles)
 
 ![Mileage Check](resources/screenshots/total-mileage.png)
 
