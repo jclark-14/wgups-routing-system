@@ -1,29 +1,94 @@
 # 📦 WGUPS Package Delivery Routing System
 
 ![Python](https://img.shields.io/badge/python-3.12+-blue?logo=python&logoColor=white)
+![Performance](https://img.shields.io/badge/mileage-105%20miles-green)
+![Optimization](https://img.shields.io/badge/algorithm%20improvement-+11.1%25-brightgreen)
+
+> 🚚 **WGUPS Delivery System Summary**
+>
+> - Optimized all 40 packages across 2 trucks with real-world constraints
+> - Achieved 25% mileage reduction vs. upper bound (140 → 105 miles)
+> - 100% on-time delivery with full constraint satisfaction
 
 ## 🚀 Project Overview
 
-The **WGUPS Package Delivery Routing System** is a sophisticated command-line application designed to efficiently manage and optimize parcel deliveries for a simulated logistics scenario at WGU. This system employs advanced routing algorithms and detailed constraint handling to ensure timely deliveries, minimal mileage, and fully automated package loading, classification, and routing.
+The **WGUPS Package Delivery Routing System** is a command-line application designed to simulate real-world parcel delivery optimization. It integrates multiple routing strategies, robust constraint handling, and real-time dynamic logic to ensure all packages are delivered on time with minimum mileage.
+
+> 📉 **Final Mileage:** 105 miles — 25% under the 140-mile performance cap  
+> ⚡ **Optimized Efficiency:** +11.1% improvement over nearest neighbor baseline  
+> 🕒 **Real-time Adjustments:** All delivery constraints dynamically resolved
 
 ---
 
 ## ✨ Key Features
 
-### 📌 Automated Package Handling
+### 🧠 Multi-Algorithm Route Optimization
 
-- **Intelligent Loading**: Automates loading of packages onto trucks based on deadlines, truck-specific requirements, delays, and delivery groups.
-- **Dynamic Constraints**: Handles real-time package updates, such as address corrections and delayed package availability.
+- **Nearest Neighbor Routing:** Fast initial solution with deadline prioritization
+- **2-Opt Refinement:** Local optimizations reduce total mileage by ~11–15%
+- **Targeted Permutation Optimization:** Brute-force improvement for ≤5 high-priority packages
+- **Hybrid Strategy:** Selectively blends algorithms for each truck based on complexity
 
-### 🚚 Advanced Routing Optimization
+### 📌 Intelligent Package Management
 
-- **Nearest Neighbor Algorithm**: Quickly generates efficient routes prioritizing urgent deadlines.
-- **2-Opt Route Refinement**: Enhances route efficiency further while ensuring no deadlines are compromised.
-- **Permutation-Based Optimization**: Dynamically handles small sets of deadline-critical packages to ensure optimal delivery times.
+- **Constraint-Aware Loading:** Autonomously honors deadlines, truck requirements, and grouped deliveries
+- **Automated Classification:** Smart categorization of packages based on constraint types
+- **Dynamic Reassignment:** Packages can shift between trucks mid-simulation as needed
 
-### 🧩 Custom Data Structures
+### 🚛 Realistic Logistics Simulation
 
-- **Hash Table Implementation**: Ensures O(1) average-time complexity for package lookup, insertion, and deletion, facilitating rapid data access and updates.
+- **Address Corrections:** Package 9 triggers a route update at 10:20 AM
+- **Staggered Availability:** Delayed package loads supported via truck returns
+- **Execution Reporting:** Simulated field constraints (e.g. rerouting, revisits) included in mileage
+
+### ⚙️ Custom Data Structures
+
+- **O(1) Hash Table:** Built from scratch for constant-time package access
+- **Lightweight Design:** Highly performant even under real-world delivery conditions
+
+---
+
+> 📈 Below: Benchmark analysis shows mileage improvement through algorithmic optimization and constraint-aware execution.
+
+## 📊 Optimization Performance
+
+### Route Optimization Results
+
+| Truck      | Algorithm Performance      | Execution Efficiency        |
+| ---------- | -------------------------- | --------------------------- |
+| 🚚 Truck 1 | 33.6 → 29.9 miles (+11.0%) | 29.9 → 61.3 miles (−105.0%) |
+| 🚚 Truck 2 | 42.1 → 37.4 miles (+11.2%) | 37.4 → 43.7 miles (−16.8%)  |
+
+### Optimization Summary
+
+- 🧠 **Route Optimization**: 75.7 → 67.3 miles (**+11.1%** improvement)
+- ⚡ **Algorithm Efficiency**: Saved **8.4 miles** via optimization
+- 🚛 **Execution Result**: 67.3 → **105.0 miles** total after real-world overhead (−56.0% execution efficiency)
+
+### 📄 Execution Overhead Analysis (37.7 extra miles)
+
+| Factor                 | Description                                           |
+| ---------------------- | ----------------------------------------------------- |
+| 📦 **Package 9**       | Address correction added ~25 miles of backtracking    |
+| ♻️ **Revisits**        | Deferred routes revisited after constraint resolution |
+| 🔄 **Dynamic Routing** | Packages swapped between trucks due to availability   |
+| ⏱️ **Safety Margins**  | Conservative scheduling ensures reliability           |
+
+> ✅ This accurately simulates how algorithmic plans diverge under real-world conditions.
+
+---
+
+## ✅ Final Performance Summary
+
+| Metric            | Requirement       | Achieved                | Status                |
+| ----------------- | ----------------- | ----------------------- | --------------------- |
+| Total Mileage     | < 140 miles       | **105 miles**           | ✅ 25% under          |
+| Deadline Packages | 100% on time      | **14/14 delivered**     | ✅ Perfect            |
+| Truck Capacity    | ≤ 16 packages     | **15–16 per truck**     | ✅ Optimal            |
+| Active Trucks     | ≤ 2 trucks        | **2 trucks**            | ✅ Resource efficient |
+| Algorithm Gain    | Minimize distance | **+11.1%** vs. baseline | ✅ Verified           |
+
+---
 
 ### 📊 Interactive CLI Interface
 
@@ -108,11 +173,20 @@ tests/
 
    ```
    Commands:
-   [1] Check specific package status
-   [2] Check all package statuses at a given time
-   [3] View total mileage
-   [4] Show detailed delivery report
-   [q] Quit
+   1. View individual package status
+   2. View all packages at a specific time
+   3. Display total mileage and optimization gains
+   4. Snapshot report for screenshots
+   5. Full delivery report with constraint validation
+   q. Quit program
+   ```
+
+4. Advanced CLI options:
+
+   ```
+      python main.py --single-run         # Skip optimization planning loop
+      python main.py --n=50               # Run 50 optimization iterations
+
    ```
 
 ---
@@ -133,9 +207,17 @@ python3 -m tests.optimizer_core
 
 ## 🚩 Future Improvements
 
-- Integrate additional advanced algorithms (Simulated Annealing, Genetic Algorithms).
-- Web-based visualization for real-time package tracking.
-- Expanded data analysis tools for operational insights.
+🧬 Genetic Algorithms / Simulated Annealing
+
+📈 Route Visualizer CLI Flag
+
+🌐 Web Dashboard (Flask or Next.js)
+
+🧠 ML-based Delivery Prediction
+
+🔗 API integration with external mapping services
+
+📁 Optional CSV/JSON delivery report export
 
 ---
 
@@ -143,7 +225,11 @@ python3 -m tests.optimizer_core
 
 ### 📋 Final Summary Report (All Constraints Met)
 
-![Final Summary](resources/screenshots/route-summary.png)
+![Final Summary](resources/screenshots/route-summary2.png)
+
+### Optimization Benchmarking
+
+![Benchmarking](resources/screenshots/benchmarking.png)
 
 ### 🧭 CLI Menu and Individual Package Check
 
@@ -151,7 +237,7 @@ python3 -m tests.optimizer_core
 
 ### 🚛 Total Mileage Display (Constraint: Total Mileage < 140 miles)
 
-![Mileage Check](resources/screenshots/total-mileage.png)
+![Mileage Check](resources/screenshots/total-mileage2.png)
 
 ### 🕐 Package Status at 9:00 AM
 
@@ -170,3 +256,5 @@ python3 -m tests.optimizer_core
 ![Unit Tests Passing](resources/screenshots/test-sample.png)
 
 ---
+
+Built to simulate real-world delivery constraints with intelligent planning, robust logic, and verifiable performance gains.

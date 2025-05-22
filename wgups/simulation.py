@@ -89,16 +89,18 @@ def run_simulation(optimizer: RouteOptimizer, execute=True) -> Tuple:
         truck1.estimated_mileage = estimate_route_mileage(truck1.route, packages, distance_matrix, address_map)
         truck2.estimated_mileage = estimate_route_mileage(truck2.route, packages, distance_matrix, address_map)
 
+    # Capturing total miles for reporting
+    for t in (truck1, truck2):
+        t.final_miles = t.mileage 
 
     return packages, [truck1, truck2]
 
 
+
 def deliver_remaining_packages(truck1, truck2, packages, optimizer, distance_matrix, address_map, package_group):
     """
-    Handle remaining packages that were deferred or unavailable earlier.
-
-    Use the truck that returned to the hub first, resets its time,
-    and attempts to deliver remaining packages.
+    Handle remaining packages that were deferred due to address corrections.
+    Wait until correction time has passed, then deliver efficiently.
     """
     remaining_packages = [
         pid for pid in packages
@@ -108,13 +110,28 @@ def deliver_remaining_packages(truck1, truck2, packages, optimizer, distance_mat
     if not remaining_packages:
         return
 
+    # Use the truck that returned first and wait for address corrections
     next_truck = truck1 if truck1.return_time <= truck2.return_time else truck2
-    next_truck.time = next_truck.return_time
+    
+    # Find the latest correction time
+    latest_correction = None
+    for pid in remaining_packages:
+        pkg = packages.lookup(pid)
+        if pkg.correction_time and (latest_correction is None or pkg.correction_time > latest_correction):
+            latest_correction = pkg.correction_time
+    
+    # Set truck time to when corrections are available
+    if latest_correction and latest_correction > next_truck.return_time:
+        next_truck.time = latest_correction
+    else:
+        next_truck.time = next_truck.return_time
 
+    # Load remaining packages
     for pid in remaining_packages:
         if next_truck.has_capacity():
             next_truck.load_package(packages.lookup(pid))
 
+    # Optimize and execute route for remaining packages
     if next_truck.cargo:
         next_truck.set_route(optimizer.optimize(next_truck, packages, distance_matrix, address_map, package_group))
         execute_route(next_truck, packages, distance_matrix, address_map)
@@ -137,10 +154,7 @@ def run_simulation_with_planning(optimizer, planning_iterations=20):
     valid_runs = []
 
     for i in range(1, planning_iterations + 1):
-
-        candidate_packages, candidate_trucks = run_simulation(
-            optimizer, execute=True)
-
+        candidate_packages, candidate_trucks = run_simulation(optimizer, execute=True)
         total_mileage = sum(t.mileage for t in candidate_trucks)
         constraints_met = constraints_satisfied(candidate_packages, candidate_trucks)
 
@@ -150,6 +164,14 @@ def run_simulation_with_planning(optimizer, planning_iterations=20):
             if total_mileage < best_mileage:
                 best_mileage = total_mileage
                 best_result = (candidate_packages, candidate_trucks)
+                
+                # Store optimization mileage for reporting
+                for truck in candidate_trucks:
+                    # Preserve the optimizer metrics from this best run
+                    if hasattr(truck, 'nn_miles'):
+                        truck.best_nn_miles = truck.nn_miles
+                    if hasattr(truck, 'opt_miles'):
+                        truck.best_opt_miles = truck.opt_miles
 
     if valid_runs:
         worst_run, worst_mileage = max(valid_runs, key=lambda x: x[1])
@@ -167,10 +189,21 @@ def run_simulation_with_planning(optimizer, planning_iterations=20):
 
     print("\nGenerating final delivery report for optimal solution...")
 
+    # Get the best result and restore metrics before reporting
     best_packages, best_trucks = best_result
+    for truck in best_trucks:
+
+        if hasattr(truck, 'best_nn_miles'):
+            old_nn = getattr(truck, 'nn_miles', 'NOT SET')
+            truck.nn_miles = truck.best_nn_miles
+        if hasattr(truck, 'best_opt_miles'):
+            old_opt = getattr(truck, 'opt_miles', 'NOT SET') 
+            truck.opt_miles = truck.best_opt_miles
+    
     generate_summary_report(best_packages, best_trucks)
 
     return best_packages, best_trucks
+
 
 
 def constraints_satisfied(packages, trucks):
