@@ -205,17 +205,17 @@ python3 -m tests.optimizer_core
 
 ## 🚩 Future Improvements
 
--Genetic Algorithms / Simulated Annealing
+- Genetic Algorithms / Simulated Annealing
 
--Route Visualizer CLI Flag
+- Route Visualizer CLI Flag
 
--Web Dashboard
+- Web Dashboard
 
--ML-based Delivery Prediction
+- ML-based Delivery Prediction
 
--API integration with external mapping services
+- API integration with external mapping services
 
--Optional CSV/JSON delivery report export
+- Optional CSV/JSON delivery report export
 
 ---
 
