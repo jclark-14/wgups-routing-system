@@ -14,7 +14,7 @@
 
 The **WGUPS Package Delivery Routing System** is a command-line application designed to simulate real-world parcel delivery optimization. It integrates multiple routing strategies, robust constraint handling, and real-time dynamic logic to ensure all packages are delivered on time with minimum mileage.
 
-> 📉 **Final Mileage:** 105 miles — 25% under the 140-mile performance cap  
+> 📉 **Final Mileage:** 106 miles -> 25% under the 140-mile performance cap  
 > ⚡ **Optimized Efficiency:** +11.1% improvement over nearest neighbor baseline  
 > 🕒 **Real-time Adjustments:** All delivery constraints dynamically resolved
 
@@ -139,12 +139,10 @@ tests/
 
 ---
 
-## 💡 Highlights and Innovations
+## 💡Additional Highlights
 
 - **End-to-End Automation**: Packages are intelligently assigned to trucks and routes based on constraints like deadlines, delays, and delivery group. No need for manual input.
-- **Efficient Route Optimization**: Combines nearest neighbor, 2-opt, and permutation-based strategies to optimize delivery timing and mileage within project limits.
 - **Modular, Extensible Design**: Separates concerns across loaders, optimizers, and simulation logic, making it easy to maintain and expand.
-- **Detailed Reporting & Logging**: Built-in reporting tools validate performance and constraints at a glance, supporting transparency and easy debugging.
 
 ---
 
@@ -207,17 +205,12 @@ python3 -m tests.optimizer_core
 
 ## 🚩 Future Improvements
 
-🧬 Genetic Algorithms / Simulated Annealing
-
-📈 Route Visualizer CLI Flag
-
-🌐 Web Dashboard (Flask or Next.js)
-
-🧠 ML-based Delivery Prediction
-
-🔗 API integration with external mapping services
-
-📁 Optional CSV/JSON delivery report export
+-Genetic Algorithms / Simulated Annealing
+-Route Visualizer CLI Flag
+-Web Dashboard
+-ML-based Delivery Prediction
+-API integration with external mapping services
+-Optional CSV/JSON delivery report export
 
 ---
 
@@ -227,7 +220,7 @@ python3 -m tests.optimizer_core
 
 ![Final Summary](resources/screenshots/route-summary2.png)
 
-### Optimization Benchmarking
+### ⚡ Optimization Benchmarking
 
 ![Benchmarking](resources/screenshots/benchmarking.png)
 
