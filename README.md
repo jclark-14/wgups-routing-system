@@ -206,10 +206,15 @@ python3 -m tests.optimizer_core
 ## 🚩 Future Improvements
 
 -Genetic Algorithms / Simulated Annealing
+
 -Route Visualizer CLI Flag
+
 -Web Dashboard
+
 -ML-based Delivery Prediction
+
 -API integration with external mapping services
+
 -Optional CSV/JSON delivery report export
 
 ---
